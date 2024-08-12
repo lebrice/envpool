@@ -18,10 +18,10 @@ from functools import partial
 from typing import Any, Callable, List, Tuple, Union
 
 import numpy as np
-from jax import core, dtypes, interpreters
+from jax import core, dtypes
 from jax import numpy as jnp
 from jax.core import ShapedArray
-from jax.interpreters import xla
+from jax.interpreters import mlir, xla
 from jax.lib import xla_client
 
 
@@ -91,8 +91,7 @@ def _make_xla_function(
   prim.multiple_results = (len(out_specs) > 1)
   prim.def_impl(partial(xla.apply_primitive, prim))
   prim.def_abstract_eval(abstract)
-  interpreters.mlir["cpu"][prim] = partial(translation, platform="cpu")
-  interpreters.mlir["gpu"][prim] = partial(translation, platform="gpu")
+  mlir.register_lowering(prim, translation)
 
   def call(*args: Any) -> Any:
     return prim.bind(*args)
