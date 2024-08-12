@@ -18,12 +18,11 @@ from functools import partial
 from typing import Any, Callable, List, Tuple, Union
 
 import numpy as np
-from jax import core, dtypes
+from jax import core, dtypes, interpreters
 from jax import numpy as jnp
 from jax.core import ShapedArray
 from jax.interpreters import xla
 from jax.lib import xla_client
-from jax import interpreters
 
 
 def _shape_with_layout(
