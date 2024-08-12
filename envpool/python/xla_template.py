@@ -23,6 +23,7 @@ from jax import numpy as jnp
 from jax.core import ShapedArray
 from jax.interpreters import xla
 from jax.lib import xla_client
+from jax import interpreters
 
 
 def _shape_with_layout(
@@ -91,10 +92,10 @@ def _make_xla_function(
   prim.multiple_results = (len(out_specs) > 1)
   prim.def_impl(partial(xla.apply_primitive, prim))
   prim.def_abstract_eval(abstract)
-  xla.backend_specific_translations["cpu"][prim] = partial(
+  interpreters.mlir["cpu"][prim] = partial(
     translation, platform="cpu"
   )
-  xla.backend_specific_translations["gpu"][prim] = partial(
+  interpreters.mlir["gpu"][prim] = partial(
     translation, platform="gpu"
   )
 
