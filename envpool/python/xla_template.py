@@ -91,12 +91,8 @@ def _make_xla_function(
   prim.multiple_results = (len(out_specs) > 1)
   prim.def_impl(partial(xla.apply_primitive, prim))
   prim.def_abstract_eval(abstract)
-  interpreters.mlir["cpu"][prim] = partial(
-    translation, platform="cpu"
-  )
-  interpreters.mlir["gpu"][prim] = partial(
-    translation, platform="gpu"
-  )
+  interpreters.mlir["cpu"][prim] = partial(translation, platform="cpu")
+  interpreters.mlir["gpu"][prim] = partial(translation, platform="gpu")
 
   def call(*args: Any) -> Any:
     return prim.bind(*args)
