@@ -19,9 +19,16 @@ RUN cp .tmux/.tmux.conf.local .
 RUN echo "set-option -g default-shell /bin/zsh" >> .tmux.conf.local
 RUN echo "set-option -g history-limit 10000" >> .tmux.conf.local
 RUN echo "export PATH=$PATH:$HOME/go/bin" >> .zshrc
+ENV USE_BAZEL_VERSION="6.4.0"
+# NOTE: Trying to use the versions that existed at the time the last release was made (2023/10/30)
+RUN go install github.com/bazelbuild/bazelisk@v1.18.0 && ln -sf $HOME/go/bin/bazelisk $HOME/go/bin/bazel
+# RUN go install github.com/bazelbuild/bazelisk@v1.18.0 && ln -sf $HOME/go/bin/bazelisk $HOME/go/bin/bazel
 
-RUN go install github.com/bazelbuild/bazelisk@latest && ln -sf $HOME/go/bin/bazelisk $HOME/go/bin/bazel
+# TODO: If there are build errors, might want to pin this to 6.3.3 (version of buildifier in oct 2023).
+# Currently unable to do it because of some go version mismatch error thingy.
+# RUN go install github.com/bazelbuild/buildtools/buildifier@v6.3.3
 RUN go install github.com/bazelbuild/buildtools/buildifier@latest
+
 RUN $HOME/go/bin/bazel version
 
 RUN useradd -ms /bin/zsh github-action

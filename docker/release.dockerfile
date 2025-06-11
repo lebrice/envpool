@@ -34,7 +34,11 @@ RUN ln -sf /usr/local/go/bin/go /usr/bin/go
 
 # install bazel
 
-RUN go install github.com/bazelbuild/bazelisk@latest && ln -sf $HOME/go/bin/bazelisk $HOME/go/bin/bazel
+# Tell bazelisk to use the bazel version https://github.com/bazelbuild/bazel/releases/tag/6.4.0 (19 oct 2023)
+ENV USE_BAZEL_VERSION="6.4.0"
+# NOTE: Trying to use the versions that existed at the time the last release was made (2023/10/30)
+RUN go install github.com/bazelbuild/bazelisk@v1.18.0 && ln -sf $HOME/go/bin/bazelisk $HOME/go/bin/bazel
+# RUN go install github.com/bazelbuild/bazelisk@latest && ln -sf $HOME/go/bin/bazelisk $HOME/go/bin/bazel
 
 RUN bazel version
 
